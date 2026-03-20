@@ -25,7 +25,7 @@ def parse_args(argv):
         description='Text to speech using the OpenAI API',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("-m", "--model", type=str, default="tts-1", help="The model to use")#, choices=["tts-1", "tts-1-hd"])
+    parser.add_argument("-m", "--model", type=str, default="tts-1", help="The model to use")#)
     parser.add_argument("-v", "--voice", type=str, default="alloy", help="The voice of the speaker")#, choices=["alloy", "echo", "fable", "onyx", "nova", "shimmer"])
     parser.add_argument("-f", "--format", type=str, default="mp3", choices=["mp3", "aac", "opus", "flac"], help="The output audio format")
     parser.add_argument("-s", "--speed", type=float, default=1.0, help="playback speed, 0.25-4.0")

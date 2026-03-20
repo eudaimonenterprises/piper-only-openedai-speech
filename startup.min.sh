@@ -4,4 +4,4 @@
 
 bash download_voices_tts-1.sh
 
-python speech.py --xtts_device none $EXTRA_ARGS $@
+python speech.py $EXTRA_ARGS $@
