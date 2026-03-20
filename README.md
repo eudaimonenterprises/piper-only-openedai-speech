@@ -100,3 +100,6 @@ tts-1:
     model: cy_GB-gwann-medium
     speaker: 0
 ```
+## SillyTavern Settings (Example)
+
+<img width="654" height="873" alt="image" src="https://github.com/user-attachments/assets/05fc1274-0915-433d-b8fd-9ed5a8c764dc" />
