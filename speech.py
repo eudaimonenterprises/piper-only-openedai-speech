@@ -55,13 +55,13 @@ def download_piper_model(model_name: str, voice_path: str = "voices"):
     voice_name = parts[1]
     quality = parts[2]
     
-    region = lang_region.split('_')[1] if '_' in lang_region else lang_region
-    base_url = "https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/"
-    folder_path = f"{lang_region[:2]}/{region}/{voice_name}/{quality}"
+    #region = lang_region.split('_')[1] if '_' in lang_region else lang_region
+    base_url = "https://huggingface.co/rhasspy/piper-voices/resolve/main/"
+    folder_path = f"{lang_region[:2]}/{lang_region}/{voice_name}/{quality}"
     
     for ext in [".onnx", ".onnx.json"]:
         filename = f"{clean_name}{ext}"
-        url = f"{base_url}{folder_path}/{filename}"
+        url = f"{base_url}{folder_path}/{filename}" + "?download=true"
         local_path = os.path.join(voice_path, filename)
         
         if os.path.isfile(local_path):
@@ -202,7 +202,9 @@ async def generate_speech(request: GenerateSpeechRequest):
 
     speaker = voice_cfg.get('speaker', None)
 
-    tts_args = ["piper", "--model", str(piper_model), "--data-dir", "voices", "--download-dir", "voices", "--output-raw"]
+    # Remove .onnx extension for piper command
+    piper_model_arg = piper_model.replace('.onnx', '')
+    tts_args = ["piper", "--model", piper_model_arg, "--data-dir", "voices", "--data-dir", "voices", "--output-raw"]
     if speaker:
         tts_args.extend(["--speaker", str(speaker)])
     if speed != 1.0:
