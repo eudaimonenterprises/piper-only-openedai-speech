@@ -14,7 +14,8 @@ from openedai import OpenAIStub, BadRequestError, ServiceUnavailableError
 from pydantic import BaseModel
 import uvicorn
 import yaml
-
+import py3langid
+import requests
 
 @contextlib.asynccontextmanager
 async def lifespan(app):
@@ -25,6 +26,59 @@ async def lifespan(app):
 app = OpenAIStub(lifespan=lifespan)
 args = None
 
+
+# Load voice map and extract supported language codes
+with open('voice_to_speaker.default.yaml', 'r', encoding='utf8') as f:
+    voice_map = yaml.safe_load(f)
+SUPPORTED_LANGS = set(voice_map.get('tts-1', {}).keys())
+
+def get_voice_for_text(text: str, fallback_voice: str) -> str:
+    """Detect language from text; if unsupported, use the user-selected voice"""
+    try:
+        lang, _ = py3langid.classify(text)
+        detected = lang[:2]
+        return detected if detected in SUPPORTED_LANGS else fallback_voice
+    except Exception:
+        return fallback_voice
+
+def download_piper_model(model_name: str, voice_path: str = "voices"):
+    """Download missing Piper .onnx model from HuggingFace"""
+    import requests
+    
+    clean_name = model_name.replace('.onnx', '')
+    parts = clean_name.split('-')
+    if len(parts) < 3:
+        logger.error(f"Cannot parse model name: {model_name}")
+        return False
+    
+    lang_region = parts[0]
+    voice_name = parts[1]
+    quality = parts[2]
+    
+    region = lang_region.split('_')[1] if '_' in lang_region else lang_region
+    base_url = "https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/"
+    folder_path = f"{lang_region[:2]}/{region}/{voice_name}/{quality}"
+    
+    for ext in [".onnx", ".onnx.json"]:
+        filename = f"{clean_name}{ext}"
+        url = f"{base_url}{folder_path}/{filename}"
+        local_path = os.path.join(voice_path, filename)
+        
+        if os.path.isfile(local_path):
+            continue
+        
+        logger.info(f"Downloading {filename}...")
+        try:
+            r = requests.get(url, allow_redirects=True, timeout=30)
+            r.raise_for_status()
+            with open(local_path, 'wb') as f:
+                f.write(r.content)
+            logger.success(f"Downloaded: {local_path}")
+        except Exception as e:
+            logger.error(f"Failed to download {filename}: {e}")
+            return False
+    
+    return True
 
 def default_exists(filename: str):
     if not os.path.exists(filename):
@@ -125,14 +179,28 @@ async def generate_speech(request: GenerateSpeechRequest):
         raise BadRequestError(f"Invalid response_format: '{response_format}'", param='response_format')
 
     # Piper is the only TTS backend
-    voice_map = map_voice_to_speaker(voice, 'tts-1')
+
+    # Determine correct voice based on text language + user selection
+    voice_to_use = get_voice_for_text(request.input, request.voice)
+
     try:
-        piper_model = voice_map['model']
+        voice_cfg = map_voice_to_speaker(voice_to_use, 'tts-1')
+    except BadRequestError as e:
+        # Fallback to first available supported language (shouldn't happen with updated default.yaml)
+        fallback_lang = list(SUPPORTED_LANGS)[0]
+        logger.warning(f"Voice '{voice_to_use}' not found, using '{fallback_lang}'")
+        voice_cfg = map_voice_to_speaker(fallback_lang, 'tts-1')
 
-    except KeyError as e:
-        raise ServiceUnavailableError(f"Configuration error: tts-1 voice '{voice}' is missing 'model:' setting. KeyError: {e}")
+    piper_model = voice_cfg['model']
 
-    speaker = voice_map.get('speaker', None)
+    # Ensure model file exists; download if missing
+    piper_model_path = os.path.join("voices", piper_model)
+    if not os.path.isfile(piper_model_path):
+        logger.info(f"Model {piper_model} not found. Attempting download...")
+        if not download_piper_model(piper_model, "voices"):
+            raise ServiceUnavailableError(f"Failed to download model: {piper_model}")
+
+    speaker = voice_cfg.get('speaker', None)
 
     tts_args = ["piper", "--model", str(piper_model), "--data-dir", "voices", "--download-dir", "voices", "--output-raw"]
     if speaker:
@@ -166,8 +234,8 @@ if __name__ == "__main__":
         description='OpenedAI Speech API Server',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument('-P', '--port', action='store', default=8000, type=int, help="Server tcp port")
-    parser.add_argument('-H', '--host', action='store', default='0.0.0.0', help="Host to listen on, Ex. 0.0.0.0")
+    parser.add_argument('-P', '--port', action='store', default=8001, type=int, help="Server tcp port")
+    parser.add_argument('-H', '--host', action='store', default='127.0.0.1', help="Host to listen on, Ex. 127.0.0.1")
     parser.add_argument('-L', '--log-level', default="INFO", choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], help="Set the log level")
 
     args = parser.parse_args()

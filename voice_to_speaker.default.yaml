@@ -1,25 +1,112 @@
 tts-1:
-  some_other_voice_name_you_want:
-    model: voices/choose your own model.onnx
-    speaker: set your own speaker
-  alloy:
-    model: voices/en_US-libritts_r-medium.onnx
-    speaker: 79 # 64, 79, 80, 101, 130
-  echo:
-    model: voices/en_US-libritts_r-medium.onnx
-    speaker: 134 # 52, 102, 134
-  echo-alt:
-    model: voices/en_US-ryan-high.onnx
-    speaker: # default speaker
-  fable:
-    model: voices/en_GB-northern_english_male-medium.onnx
-    speaker: # default speaker
-  onyx:
-    model: voices/en_US-libritts_r-medium.onnx
-    speaker: 159 # 55, 90, 132, 136, 137, 159
-  nova:
-    model: voices/en_US-libritts_r-medium.onnx
-    speaker: 107 # 57, 61, 107, 150, 162
-  shimmer:
-    model: voices/en_US-libritts_r-medium.onnx
-    speaker: 163
+  ar:  # Arabic
+    model: ar_JO-kamel-medium.onnx
+    speaker: 0
+  ca:  # Catalan
+    model: ca_ES-upc_ona-medium.onnx
+    speaker: 0
+  cs:  # Czech
+    model: cs_CZ-jirka-medium.onnx
+    speaker: 0
+  cy:  # Welsh
+    model: cy_GB-gwann-medium.onnx
+    speaker: 0
+  da:  # Danish
+    model: da_DK-toke_andersen-medium.onnx
+    speaker: 0
+  de:  # German
+    model: de_DE-thorsten-medium.onnx
+    speaker: 0
+  el:  # Greek
+    model: el_GR-raphael-medium.onnx
+    speaker: 0
+  en:  # English (US)
+    model: en_US-kristin-medium.onnx
+    speaker: 0
+  es:  # Spanish
+    model: es_ES-mls_9972-low.onnx
+    speaker: 0
+  fa:  # Persian/Farsi
+    model: fa_IR-amir-medium.onnx
+    speaker: 0
+  fi:  # Finnish
+    model: fi_FI-harri-medium.onnx
+    speaker: 0
+  fr:  # French
+    model: fr_FR-siwis-medium.onnx
+    speaker: 0
+  hi:  # Hindi
+    model: hi_IN-priyamvada-medium.onnx
+    speaker: 0
+  hu:  # Hungarian
+    model: hu_HU-anna-medium.onnx
+    speaker: 0
+  is:  # Icelandic
+    model: is_IS-bui-medium.onnx
+    speaker: 0
+  it:  # Italian
+    model: it_IT-elsa-medium.onnx
+    speaker: 0
+  ka:  # Georgian
+    model: ka_GE-natia-medium.onnx
+    speaker: 0
+  kk:  # Kazakh
+    model: kk_KZ-issai-high.onnx
+    speaker: 0
+  lb:  # Luxembourgish
+    model: lb_LU-mary-medium.onnx
+    speaker: 0
+  lv:  # Latvian
+    model: lv_LV-peters-medium.onnx
+    speaker: 0
+  ml:  # Malayalam
+    model: ml_IN-meera-medium.onnx
+    speaker: 0
+  ne:  # Nepali
+    model: ne_NP-chitwan-medium.onnx
+    speaker: 0
+  nl:  # Dutch
+    model: nl_BE-nathalie-medium.onnx
+    speaker: 0
+  no:  # Norwegian
+    model: no_NO-talesyntese-medium.onnx
+    speaker: 0
+  pl:  # Polish
+    model: pl_PL-mls_6892-low.onnx
+    speaker: 0
+  pt:  # Portuguese
+    model: pt_PT-soul_and_co-medium.onnx
+    speaker: 0
+  ro:  # Romanian
+    model: ro_RO-mihai-medium.onnx
+    speaker: 0
+  ru:  # Russian
+    model: ru_RU-denis-medium.onnx
+    speaker: 0
+  sk:  # Slovak
+    model: sk_SK-lili-medium.onnx
+    speaker: 0
+  sl:  # Slovenian
+    model: sl_SI-artur-medium.onnx
+    speaker: 0
+  sr:  # Serbian
+    model: sr_RS-serbski_institut-medium.onnx
+    speaker: 0
+  sv:  # Swedish
+    model: sv_SE-lisa-medium.onnx
+    speaker: 0
+  sw:  # Swahili
+    model: sw_CD-lanfrica-medium.onnx
+    speaker: 0
+  tr:  # Turkish
+    model: tr_TR-dfki-medium.onnx
+    speaker: 0
+  uk:  # Ukrainian
+    model: uk_UA-ukrainian_tts-medium.onnx
+    speaker: 0
+  vi:  # Vietnamese
+    model: vi_VN-vais1000-medium.onnx
+    speaker: 0
+  zh:  # Chinese
+    model: zh_CN-huayan-medium.onnx
+    speaker: 0

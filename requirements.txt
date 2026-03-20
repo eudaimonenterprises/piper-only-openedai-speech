@@ -3,3 +3,6 @@ uvicorn
 loguru
 piper-tts
 pyyaml
+pathvalidate
+py3langid
+requests

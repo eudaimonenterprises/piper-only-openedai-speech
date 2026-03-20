@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL=${1:-http://localhost:8000/v1/audio/speech}
+URL=${1:-http://localhost:8001/v1/audio/speech}
 
 for voice in alloy echo fable onyx nova shimmer ; do
     echo $voice

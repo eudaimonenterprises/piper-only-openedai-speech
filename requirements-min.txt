@@ -4,3 +4,6 @@ loguru
 numpy<2
 piper-tts
 pyyaml
+pathvalidate
+py3langid
+requests
